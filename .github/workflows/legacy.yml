@@ -2,9 +2,7 @@ name: (GCC)Kernel Builder Xiaomi 10 Ultra
 
 on: 
   push:
-  schedule:
-    - cron: '0 1 * * *'
-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
