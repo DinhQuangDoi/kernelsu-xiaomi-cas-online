@@ -33,9 +33,9 @@ jobs:
         fi
         
         echo "[+] Append kernel params to manual hook"
-        echo "CONFIG_KSU=y" >> arch/arm64/configs/vendor/cas_defconfig
-        echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/arm64/configs/vendor/cas_defconfig
-        echo "CONFIG_KSU_FULL_NAME_FORMAT=\"%TAG_NAME%-Lixin@%REPO_NAME%\"" >> arch/arm64/configs/vendor/cas_defconfig
+        echo "CONFIG_KSU=y" >> arch/arm64/configs/cas_defconfig
+        echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/arm64/configs/cas_defconfig
+        echo "CONFIG_KSU_FULL_NAME_FORMAT=\"%TAG_NAME%-Lixin@%REPO_NAME%\"" >> arch/arm64/configs/cas_defconfig
         
         # Initialize and update ReSukiSU submodule
         git submodule update --init --recursive drivers/kernelsu
