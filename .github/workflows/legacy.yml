@@ -17,6 +17,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
+        sudo apt-get purge -y snapd
         sudo apt update -y && sudo apt upgrade -y
         sudo apt install -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses-dev lib32z1-dev libssl-dev libxml2-utils xsltproc unzip bc
 
@@ -39,8 +40,11 @@ jobs:
         # Initialize and update ReSukiSU submodule
         git submodule update --init --recursive drivers/kernelsu
         
-        # Fix Makefile for submodule path
-        sed -i 's|obj-y += kernelsu/|obj-y += kernelsu/kernel/|' drivers/Makefile
+        if grep -q "^obj-y += kernelsu/$" drivers/Makefile; then
+          sed -i 's|^obj-y += kernelsu/$|obj-y += kernelsu/kernel/|' drivers/Makefile
+        elif ! grep -q "^obj-y += kernelsu/kernel/$" drivers/Makefile; then
+          echo "obj-y += kernelsu/kernel/" >> drivers/Makefile
+        fi
         
         echo "[+] Done."
 
