@@ -6,13 +6,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-    - name: Checkout AnyKernel3
-      uses: actions/checkout@v4
-      with:
-        repository: lemniskett/AnyKernel3
-        path: zipper
 
     - name: Checkout GCC Toolchain
       uses: actions/checkout@v4
@@ -36,20 +31,18 @@ jobs:
           sudo cp ./libdebuginfod.so.1 /usr/lib/
           sudo chmod 777 /usr/lib/libdebuginfod.so.1
         fi
-      
+        
         echo "[+] Append kernel params to manual hook"
         echo "CONFIG_KSU=y" >> arch/arm64/configs/vendor/cas_defconfig
         echo "CONFIG_KSU_MANUAL_HOOK=y" >> arch/arm64/configs/vendor/cas_defconfig
         echo "CONFIG_KSU_FULL_NAME_FORMAT=\"%TAG_NAME%-Lixin@%REPO_NAME%\"" >> arch/arm64/configs/vendor/cas_defconfig
-
-        echo "[+] Setup KernelSU"
-        git clone --depth 1 https://github.com/ReSukiSU/ReSukiSU ../KernelSU
-        rm -rf drivers/kernelsu
-        cp -r ../KernelSU/kernel drivers/kernelsu
-
-        echo "[+] Add kernel su driver to Makefile"
-        echo "obj-y += kernelsu/" >> drivers/Makefile
-        echo "ccflags-y += -std=gnu11" >> drivers/kernelsu/Makefile
+        
+        # Initialize and update ReSukiSU submodule
+        git submodule update --init --recursive drivers/kernelsu
+        
+        # Fix Makefile for submodule path
+        sed -i 's|obj-y += kernelsu/|obj-y += kernelsu/kernel/|' drivers/Makefile
+        
         echo "[+] Done."
 
     - name: Compile Kernel
@@ -70,4 +63,3 @@ jobs:
       with:
         name: Image
         path: ${{ github.workspace }}/source/arch/arm64/boot/Image
-        
