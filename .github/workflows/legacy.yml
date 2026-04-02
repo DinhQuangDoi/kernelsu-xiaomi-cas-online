@@ -43,7 +43,7 @@ jobs:
         cd KernelSU
         git stash && git pull
         cd ..
-        cp -r KernelSU/kernel drivers/kernelsu
+        rm -rf drivers/kernelsu && cp -r KernelSU/kernel drivers/kernelsu
 
         echo "[+] Add kernel su driver to Makefile"
 
