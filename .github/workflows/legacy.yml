@@ -54,6 +54,7 @@ jobs:
         
         cd source
         make cas_defconfig
+        echo "CONFIG_KSU_MANUAL_HOOK=y" >> .config
         make -j$(nproc --all)
 
     - name: Upload Build
